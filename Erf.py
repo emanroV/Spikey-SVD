@@ -9,8 +9,6 @@ from scipy.special import erf
 
 
 def NeuralNetwork(dep, axx, var):
-    def relu(x):
-        return 0 if x<0 else x
 
     # size of matrices
     mat_size = 100
