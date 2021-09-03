@@ -7,7 +7,7 @@ from multiprocessing import Pool
 
 
 
-def NeuralNetwork(dep, axx, var):
+def NeuralNetwork(dep, axx, mat_var, bias_var):
     def relu(x):
         return 0 if x<0 else x
 
@@ -20,14 +20,14 @@ def NeuralNetwork(dep, axx, var):
         Weight_array = p.map(ortho_group.rvs, [mat_size for _ in range(dep)])
 
     for i in range(dep):
-        Weight_array[i] *= var
+        Weight_array[i] *= mat_var
 
     D = [np.identity(mat_size) for _ in range(dep)]
 
     vec = np.random.randn(mat_size)
 
     for i in range(dep):
-        bias_vec = np.random.randn(mat_size)*0.05
+        bias_vec = np.random.randn(mat_size)*bias_var
         h = Weight_array[i].dot(vec) + bias_vec
         for j in range(mat_size):
             if h[j]<0:
@@ -60,7 +60,7 @@ def NeuralNetwork(dep, axx, var):
     # Plot setup
     axx.plot([i for i in range(-200, 10)], count, '--')
     axx.set_xlabel('log_10(s)')
-    axx.set_ylabel(f'$\sigma^2 = {var}$')
+    axx.set_ylabel(f'$\sigma^2 = {mat_var}$')
     axx.set_title(f'Depth {dep}')
 
 if __name__ == '__main__':
@@ -71,17 +71,17 @@ if __name__ == '__main__':
 
     np.random.RandomState(100)
 
-    #NeuralNetwork(5,axs[0,0], 0.01)
-    #NeuralNetwork(50, axs[0,1], 0.01)
-    #NeuralNetwork(100, axs[1,0], 0.01)
-    #NeuralNetwork(150, axs[1,1], 0.01)
-    NeuralNetwork(50,axs[0,0], 0.1)
-    NeuralNetwork(50, axs[0,1], 0.5)
-    NeuralNetwork(50, axs[1,0], 1)
-    NeuralNetwork(50, axs[1,1], 2)
-    #NeuralNetwork(5,axs[0,0], 2)
-    #NeuralNetwork(5, axs[0,1], 50)
-    #NeuralNetwork(5, axs[1,0], 100)
-    #NeuralNetwork(5, axs[1,1], 200)
+    #NeuralNetwork(5,axs[0,0], 0.01, 0.05)
+    #NeuralNetwork(50, axs[0,1], 0.01, 0.05)
+    #NeuralNetwork(100, axs[1,0], 0.01, 0.05)
+    #NeuralNetwork(150, axs[1,1], 0.01, 0.05)
+    NeuralNetwork(50,axs[0,0], 0.1, 0.05)
+    NeuralNetwork(50, axs[0,1], 0.5, 0.05)
+    NeuralNetwork(50, axs[1,0], 1, 0.05)
+    NeuralNetwork(50, axs[1,1], 2, 0.05)
+    #NeuralNetwork(5,axs[0,0], 2, 0.05)
+    #NeuralNetwork(5, axs[0,1], 50, 0.05)
+    #NeuralNetwork(5, axs[1,0], 100, 0.05)
+    #NeuralNetwork(5, axs[1,1], 200, 0.05)
 
     plt.show()

@@ -8,7 +8,7 @@ from scipy.special import erf
 
 
 
-def NeuralNetwork(dep, axx, var):
+def NeuralNetwork(dep, axx, mat_var, bias_var):
 
     # size of matrices
     mat_size = 100
@@ -18,14 +18,14 @@ def NeuralNetwork(dep, axx, var):
         Weight_array = p.map(ortho_group.rvs, [mat_size for _ in range(dep)])
 
     for i in range(dep):
-        Weight_array[i] *= var
+        Weight_array[i] *= mat_var
 
     D = [np.identity(mat_size) for _ in range(dep)]
 
     vec = np.random.randn(mat_size)
 
     for i in range(dep):
-        bias_vec = np.random.randn(mat_size)*0.05
+        bias_vec = np.random.randn(mat_size) * bias_var
         h = Weight_array[i].dot(vec) + bias_vec
         for j in range(mat_size):
                 D[i][j,j] = 2/pi*np.exp(-h[j]**2)
@@ -54,7 +54,7 @@ def NeuralNetwork(dep, axx, var):
 
     axx.plot([i for i in range(-200, 100)], count, '--')
     axx.set_xlabel('log_10(s)')
-    axx.set_ylabel(f'$\sigma^2 = {var}$')
+    axx.set_ylabel(f'$\sigma^2 = {mat_var}$')
     axx.set_title(f'Depth {dep}')
 
 if __name__ == '__main__':
@@ -63,13 +63,13 @@ if __name__ == '__main__':
 
     fig.tight_layout(pad = 3)
 
-    #NeuralNetwork(10,axs[0,0], 5)
-    #NeuralNetwork(20, axs[0,1], 5)
-    #NeuralNetwork(50, axs[1,0], 5)
-    #NeuralNetwork(100, axs[1,1], 5)
-    NeuralNetwork(50,axs[0,0], 0.5)
-    NeuralNetwork(50, axs[0,1], 1)
-    NeuralNetwork(50, axs[1,0], 3)
-    NeuralNetwork(50, axs[1,1], 6)
+    #NeuralNetwork(10,axs[0,0], 5, 0.05)
+    #NeuralNetwork(20, axs[0,1], 5, 0.05)
+    #NeuralNetwork(50, axs[1,0], 5, 0.05)
+    #NeuralNetwork(100, axs[1,1], 5, 0.05)
+    NeuralNetwork(50,axs[0,0], 0.5, 0.05)
+    NeuralNetwork(50, axs[0,1], 1, 0.05)
+    NeuralNetwork(50, axs[1,0], 3, 0.05)
+    NeuralNetwork(50, axs[1,1], 6, 0.05)
 
     plt.show()
