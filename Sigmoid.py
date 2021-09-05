@@ -15,7 +15,7 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
         return sigmoid(x) * ( 1 - sigmoid(x) )
 
     # size of matrices
-    mat_size = 100
+    mat_size = 1000
 
     # multiprocessing.cpu_count() = 8
     with Pool(8) as p:
