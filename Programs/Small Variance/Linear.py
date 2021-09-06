@@ -51,9 +51,9 @@ if __name__ == "__main__":
 
     np.random.RandomState(100)
 
-    NeuralNetwork(10,axs[0,0], 1, 0.25)
-    NeuralNetwork(20, axs[0,1], 1, 0.25)
-    NeuralNetwork(30, axs[1,0], 1, 0.25)
-    NeuralNetwork(50, axs[1,1], 1, 0.25)
+    NeuralNetwork(10,axs[0,0], 0.1, 0.05)
+    NeuralNetwork(20, axs[0,1], 0.1, 0.05)
+    NeuralNetwork(30, axs[1,0], 0.1, 0.05)
+    NeuralNetwork(50, axs[1,1], 0.1, 0.05)
 
     plt.show()
