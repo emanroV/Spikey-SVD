@@ -7,12 +7,13 @@ from multiprocessing import Pool
 
 def NeuralNetwork(dep, axx, mat_var, bias_var):
     
-    mat_size = 1000
+    mat_size = 100
 
     Weight_array = [np.random.randn(mat_size,mat_size) for _ in range(dep)]
 
     for i in range(dep):
         Weight_array[i] *= mat_var
+
 
     Jacobi = np.identity(mat_size)
 
@@ -29,16 +30,16 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
 
     print(sv)
 
-    count = [0 for i in range(-200, 10)]
+    count = [0 for i in range(-60, 60)]
 
     for s in sv:
         if s>0:
-            count[floor(log10(s))+200] += 1
+            count[floor(log10(s))+60] += 1
 
     #for i in range(200):
         #count[i] /= mat_size
 
-    axx.plot([i for i in range(-200, 10)], count, '--')
+    axx.plot([i for i in range(-60, 60)], count, '--')
     axx.set_xlabel('log_10(s)')
     axx.set_ylabel(f'$\sigma^2 = {mat_var}$')
     axx.set_title(f'Depth {dep}')
@@ -50,9 +51,9 @@ if __name__ == "__main__":
 
     np.random.RandomState(100)
 
-    NeuralNetwork(10,axs[0,0], 0.01, 0.05)
-    NeuralNetwork(20, axs[0,1], 0.01, 0.2)
-    NeuralNetwork(30, axs[1,0], 0.01, 0.5)
-    NeuralNetwork(50, axs[1,1], 0.01, 1)
+    NeuralNetwork(10,axs[0,0], 1, 0.25)
+    NeuralNetwork(20, axs[0,1], 1, 0.25)
+    NeuralNetwork(30, axs[1,0], 1, 0.25)
+    NeuralNetwork(50, axs[1,1], 1, 0.25)
 
     plt.show()

@@ -43,16 +43,16 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
     print(sv)
 
     # range(..., ...) can be changed
-    count = [0 for i in range(-200, 100)]
+    count = [0 for i in range(-100, 0)]
 
     for s in sv:
         if s>0:
-            count[floor(log10(s)) + 200] += 1
+            count[floor(log10(s)) + 100] += 1
 
     #for i in range(21):
         #count[i] /= mat_size
 
-    axx.plot([i for i in range(-200, 100)], count, '--')
+    axx.plot([i for i in range(-100, 0)], count, '--')
     axx.set_xlabel('log_10(s)')
     axx.set_ylabel(f'$\sigma^2 = {mat_var}$')
     axx.set_title(f'Depth {dep}')
@@ -67,9 +67,9 @@ if __name__ == '__main__':
     #NeuralNetwork(20, axs[0,1], 5, 0.05)
     #NeuralNetwork(50, axs[1,0], 5, 0.05)
     #NeuralNetwork(100, axs[1,1], 5, 0.05)
-    NeuralNetwork(50,axs[0,0], 0.5, 0.05)
-    NeuralNetwork(50, axs[0,1], 1, 0.05)
-    NeuralNetwork(50, axs[1,0], 3, 0.05)
-    NeuralNetwork(50, axs[1,1], 6, 0.05)
+    NeuralNetwork(10,axs[0,0], 0.1, 0.05)
+    NeuralNetwork(20, axs[0,1], 0.1, 0.05)
+    NeuralNetwork(30, axs[1,0], 0.1, 0.05)
+    NeuralNetwork(50, axs[1,1], 0.1, 0.05)
 
     plt.show()

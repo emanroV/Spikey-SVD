@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 from multiprocessing import Pool
 
 
+def relu(x):
+    return 0 if x<0 else x
 
 def NeuralNetwork(dep, axx, mat_var, bias_var):
-    def relu(x):
-        return 0 if x<0 else x
 
     # size of matrices
     mat_size = 100
@@ -75,10 +75,10 @@ if __name__ == '__main__':
     #NeuralNetwork(50, axs[0,1], 0.01, 0.05)
     #NeuralNetwork(100, axs[1,0], 0.01, 0.05)
     #NeuralNetwork(150, axs[1,1], 0.01, 0.05)
-    NeuralNetwork(50,axs[0,0], 0.1, 0.05)
-    NeuralNetwork(50, axs[0,1], 0.5, 0.05)
-    NeuralNetwork(50, axs[1,0], 1, 0.05)
-    NeuralNetwork(50, axs[1,1], 2, 0.05)
+    NeuralNetwork(10,axs[0,0], 0.1, 0.05)
+    NeuralNetwork(20, axs[0,1], 0.1, 0.05)
+    NeuralNetwork(30, axs[1,0], 0.1, 0.05)
+    NeuralNetwork(50, axs[1,1], 0.1, 0.05)
     #NeuralNetwork(5,axs[0,0], 2, 0.05)
     #NeuralNetwork(5, axs[0,1], 50, 0.05)
     #NeuralNetwork(5, axs[1,0], 100, 0.05)
