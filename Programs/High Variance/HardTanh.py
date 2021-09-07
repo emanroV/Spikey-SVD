@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import loadtxt
 from math import log10, floor
 from scipy.linalg import svdvals
 from scipy.stats import ortho_group
@@ -87,9 +88,14 @@ if __name__ == '__main__':
 
     fig.tight_layout(pad = 3)
 
-    NeuralNetwork(10,axs[0,0], 5, 0.05)
-    NeuralNetwork(20, axs[0,1], 5, 0.05)
-    NeuralNetwork(30, axs[1,0], 5, 0.05)
-    NeuralNetwork(50, axs[1,1], 5, 0.05)
+    data = loadtxt('hardtanh_critical.csv', delimiter=',')
+
+    data_len = np.shape(data)[0]
+
+    sw_sb = np.random.randint(0,data_len-1)
+    NeuralNetwork(10,axs[0,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(20,axs[0,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(30,axs[1,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(50,axs[1,1], data[sw_sb][0], data[sw_sb][1])
 
     plt.show()
