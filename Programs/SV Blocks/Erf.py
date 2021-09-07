@@ -28,7 +28,7 @@ def NeuralNetwork(dep, mat_var, bias_var):
         bias_vec = np.random.randn(mat_size) * bias_var
         h = Weight_array[i].dot(vec) + bias_vec
         for j in range(mat_size):
-                D[i][j,j] = 2/pi*np.exp(-h[j]**2)
+                D[i][j,j] = 2/np.sqrt(pi)*np.exp(-h[j]**2)
                 vec[j] = erf(h[j])
 
     Jacobi = np.identity(mat_size)

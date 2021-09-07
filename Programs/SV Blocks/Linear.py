@@ -63,9 +63,20 @@ def NeuralNetwork(dep, mat_var, bias_var):
 if __name__ == "__main__":
 
     np.random.RandomState(0)
+    with open('linear_critical.txt') as f:
+        lines = f.readlines()
 
-    NeuralNetwork(100, 1, 0.05)
-    NeuralNetwork(100, 1, 0.2)
-    NeuralNetwork(100, 1, 0.5)
-    NeuralNetwork(100, 1, 1)
+    ar = lines[0].split('],')
+    print(ar)
 
+    sw, sb = ar[np.random.randint(0, len(ar))]
+    NeuralNetwork(100, sw, sb)
+
+    sw, sb = ar[np.random.randint(0, len(ar))]
+    NeuralNetwork(100, sw, sb)
+
+    sw, sb = ar[np.random.randint(0, len(ar))]
+    NeuralNetwork(100, sw, sb)
+
+    sw, sb = ar[np.random.randint(0, len(ar))]
+    NeuralNetwork(100, sw, sb)
