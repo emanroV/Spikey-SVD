@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import loadtxt
 from math import log10, floor
 from scipy.linalg import diagsvd
 from scipy.linalg import svdvals
@@ -28,14 +29,6 @@ def NeuralNetwork(dep, mat_var, bias_var):
         Jacobi = np.matmul(Jacobi, Weight_array[i])
 
     sv = svdvals(Jacobi)
-    D = diagsvd(sv, mat_size, mat_size)
-
-    for i in range(mat_size):
-        if D[i][i] > 0:
-            D[i][i] = floor(log10(D[i][i]))
-        else:
-            D[i][i] = -99999
-
 
     sv_list = []
     for s in sv:
@@ -63,20 +56,12 @@ def NeuralNetwork(dep, mat_var, bias_var):
 if __name__ == "__main__":
 
     np.random.RandomState(0)
-    with open('linear_critical.txt') as f:
-        lines = f.readlines()
+    data = loadtxt('linear_critical.csv', delimiter=',')
 
-    ar = lines[0].split('],')
-    print(ar)
+    data_len = np.shape(data)[0]
 
-    sw, sb = ar[np.random.randint(0, len(ar))]
-    NeuralNetwork(100, sw, sb)
-
-    sw, sb = ar[np.random.randint(0, len(ar))]
-    NeuralNetwork(100, sw, sb)
-
-    sw, sb = ar[np.random.randint(0, len(ar))]
-    NeuralNetwork(100, sw, sb)
-
-    sw, sb = ar[np.random.randint(0, len(ar))]
-    NeuralNetwork(100, sw, sb)
+    sw_sb = np.random.randint(0,data_len-1)
+    NeuralNetwork(10, data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(20, data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(30, data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(50, data[sw_sb][0], data[sw_sb][1])

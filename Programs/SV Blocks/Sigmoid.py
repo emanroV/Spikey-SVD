@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import loadtxt
 from math import log10, floor
 from scipy.linalg import svdvals
 from scipy.stats import ortho_group
@@ -68,10 +69,13 @@ def NeuralNetwork(dep, mat_var, bias_var):
 
 if __name__ == '__main__':
 
-    np.random.RandomState(100)
+    data = loadtxt('linear_critical.csv', delimiter=',')
 
-    NeuralNetwork(100, 1, 0.05)
-    NeuralNetwork(100, 1, 0.2)
-    NeuralNetwork(100, 1, 0.5)
-    NeuralNetwork(100, 1, 1)
+    data_len = np.shape(data)[0]
+
+    sw_sb = np.random.randint(0,data_len-1)
+    NeuralNetwork(10, data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(20, data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(30, data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(50, data[sw_sb][0], data[sw_sb][1])
 

@@ -1,9 +1,11 @@
+from math import log10, floor, pi
 import numpy as np
-from math import log10, floor
+from numpy import loadtxt
 from scipy.linalg import svdvals
 from scipy.stats import ortho_group
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
+from scipy.special import erf
 
 
 
@@ -27,14 +29,8 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
         bias_vec = np.random.randn(mat_size) * bias_var
         h = Weight_array[i].dot(vec) + bias_vec
         for j in range(mat_size):
-            if h[j]<-1:
-                D[i][j,j] = 0
-                vec[j]=-1
-            elif h[j]>1:
-                D[i][j,j] = 0
-                vec[j]=1
-            else:
-                vec[j] = h[j]
+                D[i][j,j] = 2/np.sqrt(pi)*np.exp(-h[j]**2)
+                vec[j] = erf(h[j])
 
     Jacobi = np.identity(mat_size)
 
@@ -42,10 +38,9 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
         Jacobi = np.matmul(np.matmul(Jacobi, D[i]), Weight_array[i])
 
     sv = svdvals(Jacobi)
+
     print('check')
-
-    print('----------------------------')
-
+    print('---------------------------------------')
     print(sv)
     sv_no_zeros = np.delete(sv, np.where(sv < 10**(-300)))
     print('Sv no zeros: ', sv_no_zeros)
@@ -87,10 +82,21 @@ if __name__ == '__main__':
 
     fig.tight_layout(pad = 3)
 
-    np.random.RandomState(100)
-    NeuralNetwork(10,axs[0,0], 5, 0.1)
-    NeuralNetwork(20,axs[0,1], 5, 0.1)
-    NeuralNetwork(30,axs[1,0], 5, 0.1)
-    NeuralNetwork(50,axs[1,1], 5, 0.1)
+    data = loadtxt('erf_critical.csv', delimiter=',')
+
+    data_len = np.shape(data)[0]
+
+    sw_sb = np.random.randint(0,data_len-1)
+    NeuralNetwork(10,axs[0,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(20,axs[0,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(30,axs[1,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(50,axs[1,1], data[sw_sb][0], data[sw_sb][1])
+    #NeuralNetwork(20, axs[0,1], 5, 0.05)
+    #NeuralNetwork(50, axs[1,0], 5, 0.05)
+    #NeuralNetwork(100, axs[1,1], 5, 0.05)
+    #NeuralNetwork(10,axs[0,0], 1, 0.05)
+    #NeuralNetwork(20, axs[0,1], 1, 0.05)
+    #NeuralNetwork(30, axs[1,0], 1, 0.05)
+    #NeuralNetwork(50, axs[1,1], 1, 0.05)
 
     plt.show()

@@ -10,10 +10,10 @@ from multiprocessing import Pool
 def relu(x):
     return 0 if x<0 else x
 
-def NeuralNetwork(dep, mat_var, bias_var):
+def NeuralNetwork(dep, axx, mat_var, bias_var):
 
     # size of matrices
-    mat_size = 200
+    mat_size = 100
 
     # multiprocessing.cpu_count() = 8
     with Pool(8) as p:
@@ -45,40 +45,59 @@ def NeuralNetwork(dep, mat_var, bias_var):
         Jacobi = np.matmul(np.matmul(Jacobi, D[i]), Weight_array[i])
 
     sv = svdvals(Jacobi)
-    sv_list = []
-    for s in sv:
-        if s > 0:
-            sv_list.append(floor(log10(s)))
+    print('check')
 
-    unique_sv = set(sv_list)
-    sv_len = len(unique_sv)
-    SV_Blocks = np.zeros((sv_len, 2))
+    print('---------------------------------------------------')
+    print(sv)
 
-    i=0
-    for s in unique_sv:
-        SV_Blocks[i][0] = s
-        SV_Blocks[i][1] = sv_list.count(s)
-        i += 1
+    sv_no_zeros = np.delete(sv, np.where(sv < 10**(-300)))
+    print('Sv no zeros: ', sv_no_zeros)
+    sv_min = sv_no_zeros[0]
+    sv_len = np.shape(sv_no_zeros)[0]
 
-    print(SV_Blocks)
-    print('---------------------')
-    mean = 0
     for i in range(sv_len):
-        mean += SV_Blocks[i][1]
-    print('Mean size of Blocks: ', mean / sv_len)
-    print('====================')
+        if sv_no_zeros[i] < sv_min:
+            sv_min = sv_no_zeros[i]
 
+    print('Sv min: ', sv_min)
+    sv_max = max(sv)
+
+    btm_bnd = floor(log10(sv_min))
+
+    top_bnd = floor(log10(sv_max))
+    print('btm: ', btm_bnd)
+    print('top: ', top_bnd)
+
+    # range(..., ...) can be changed
+    count = [0 for i in range(abs(btm_bnd - top_bnd)+1)]
+
+    for s in sv:
+        if s>0:
+            print('value: ', floor(log10(s)))
+            count[floor(log10(s)) - btm_bnd] += 1
+
+    #for i in range(21):
+        #count[i] /= mat_size
+
+    axx.plot([i for i in range(btm_bnd, top_bnd + 1)], count, '--')
+    axx.set_xlabel('log_10(s)')
+    axx.set_ylabel(f'$\sigma = {mat_var}$')
+    axx.set_title(f'Depth {dep}')
 
 if __name__ == '__main__':
 
-    np.random.RandomState(100)
+    fig, axs = plt.subplots(2,2)
+
+    fig.tight_layout(pad = 3)
 
     data = loadtxt('relu_critical.csv', delimiter=',')
 
     data_len = np.shape(data)[0]
 
     sw_sb = np.random.randint(0,data_len-1)
-    NeuralNetwork(10, data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(20, data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(30, data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(50, data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(10,axs[0,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(20,axs[0,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(30,axs[1,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(50,axs[1,1], data[sw_sb][0], data[sw_sb][1])
+
+    plt.show()
