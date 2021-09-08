@@ -1,5 +1,4 @@
 import numpy as np
-from numpy import loadtxt
 from math import log10, floor
 from scipy.linalg import svdvals
 import matplotlib.pyplot as plt
@@ -49,17 +48,10 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
     print('top: ', top_bnd)
 
     # range(..., ...) can be changed
-    count = [0 for i in range(abs(btm_bnd - top_bnd)+1)]
+    sv_hist = [floor(log10(sv_no_zeros[i])) for i in range(sv_len)]
 
-    for s in sv:
-        if s>0:
-            print('value: ', floor(log10(s)))
-            count[floor(log10(s)) - btm_bnd] += 1
-
-    #for i in range(21):
-        #count[i] /= mat_size
-
-    axx.plot([i for i in range(btm_bnd, top_bnd + 1)], count, '--')
+    axx.hist(sv_hist, abs(btm_bnd - top_bnd) + 1, (btm_bnd, top_bnd), histtype = 'bar', rwidth = 0.9)
+    #axx.plot([i for i in range(btm_bnd, top_bnd + 1)], count, '.')
     axx.set_xlabel('log_10(s)')
     axx.set_ylabel(f'$\sigma = {mat_var}$')
     axx.set_title(f'Depth {dep}')
@@ -69,14 +61,10 @@ if __name__ == "__main__":
 
     fig.tight_layout(pad=3.0)
 
-    data = loadtxt('linear_critical.csv', delimiter=',')
-
-    data_len = np.shape(data)[0]
-
-    sw_sb = np.random.randint(0,data_len-1)
-    NeuralNetwork(10,axs[0,0], data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(20,axs[0,1], data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(30,axs[1,0], data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(50,axs[1,1], data[sw_sb][0], data[sw_sb][1])
+    np.random.RandomState(100)
+    NeuralNetwork(10,axs[0,0], 0.1, 0.05)
+    NeuralNetwork(20,axs[0,1], 0.1, 0.05)
+    NeuralNetwork(30,axs[1,0], 0.1, 0.05)
+    NeuralNetwork(50,axs[1,1], 0.1, 0.05)
 
     plt.show()

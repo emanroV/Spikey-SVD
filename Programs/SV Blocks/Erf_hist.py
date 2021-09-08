@@ -1,14 +1,15 @@
+from math import log10, floor, pi
 import numpy as np
 from numpy import loadtxt
-from math import log10, floor
 from scipy.linalg import svdvals
 from scipy.stats import ortho_group
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
+from scipy.special import erf
 
 
 
-def NeuralNetwork(dep, mat_var, bias_var):
+def NeuralNetwork(dep, axx, mat_var, bias_var):
 
     # size of matrices
     mat_size = 200
@@ -28,14 +29,8 @@ def NeuralNetwork(dep, mat_var, bias_var):
         bias_vec = np.random.randn(mat_size) * bias_var
         h = Weight_array[i].dot(vec) + bias_vec
         for j in range(mat_size):
-            if h[j]<-1:
-                D[i][j,j] = 0
-                vec[j]=-1
-            elif h[j]>1:
-                D[i][j,j] = 0
-                vec[j]=1
-            else:
-                vec[j] = h[j]
+                D[i][j,j] = 2/np.sqrt(pi)*np.exp(-h[j]**2)
+                vec[j] = erf(h[j])
 
     Jacobi = np.identity(mat_size)
 
@@ -44,8 +39,9 @@ def NeuralNetwork(dep, mat_var, bias_var):
 
     sv = svdvals(Jacobi)
     sv_list = []
+
     for s in sv:
-        if s > 0:
+        if s>0:
             sv_list.append(floor(log10(s)))
 
     unique_sv = set(sv_list)
@@ -59,22 +55,40 @@ def NeuralNetwork(dep, mat_var, bias_var):
         i += 1
 
     print(SV_Blocks)
-    print('---------------------')
+    print('-----------------')
     mean = 0
     for i in range(sv_len):
         mean += SV_Blocks[i][1]
-    print('Mean size of Blocks: ', mean / sv_len)
-    print('====================')
+        
+    mean = format(mean / sv_len, '.2f')
+    print('Mean size of Blocks: ', mean)
+    print('=====================')
+    sv_min = int(min(SV_Blocks[:,0]))
+    sv_max = int(max(SV_Blocks[:,0]))
+    print('SV min: ', sv_min)
+    print('SV max: ', sv_max)
 
+    axx.hist(sv_list, abs(sv_max - sv_min)+1, (sv_min, sv_max), histtype = 'bar', rwidth = 0.9)
+    axx.set_xlabel('log_10(s)')
+    axx.set_ylabel(f'Mean: {mean}')
+    axx.set_title(f'Depth {dep}')
 
 if __name__ == '__main__':
+
+    fig, axs = plt.subplots(2,2)
+
+    fig.suptitle('Occurences of singular values (floor(log10(s)))', fontsize = 14)
+
+    fig.tight_layout(pad = 3.0)
 
     data = loadtxt('linear_critical.csv', delimiter=',')
 
     data_len = np.shape(data)[0]
 
     sw_sb = np.random.randint(0,data_len-1)
-    NeuralNetwork(10, data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(20, data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(30, data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(50, data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(10, axs[0,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(20, axs[0,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(30, axs[1,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(50, axs[1,1], data[sw_sb][0], data[sw_sb][1])
+    
+    plt.show()

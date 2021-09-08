@@ -77,7 +77,10 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
     #for i in range(21):
         #count[i] /= mat_size
 
-    axx.plot([i for i in range(btm_bnd, top_bnd + 1)], count, '--')
+    sv_hist = [floor(log10(sv_no_zeros[i])) for i in range(sv_len)]
+
+    axx.hist(sv_hist, abs(btm_bnd - top_bnd) + 1, (btm_bnd, top_bnd), histtype = 'bar', rwidth = 0.9)
+    #axx.plot([i for i in range(btm_bnd, top_bnd + 1)], count, '--')
     axx.set_xlabel('log_10(s)')
     axx.set_ylabel(f'$\sigma = {mat_var}$')
     axx.set_title(f'Depth {dep}')
