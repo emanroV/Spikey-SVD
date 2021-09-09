@@ -1,13 +1,14 @@
-from math import log10, floor, pi
 import numpy as np
 from numpy import loadtxt
+from math import log10, floor
 from scipy.linalg import svdvals
 from scipy.stats import ortho_group
-from multiprocessing import Pool
 import matplotlib.pyplot as plt
-from scipy.special import erf
+from multiprocessing import Pool
 
 
+def relu(x):
+    return 0 if x<0 else x
 
 def NeuralNetwork(mat_size, axx, mat_var, bias_var):
 
@@ -16,6 +17,7 @@ def NeuralNetwork(mat_size, axx, mat_var, bias_var):
 
     # multiprocessing.cpu_count() = 8
     with Pool(8) as p:
+        #Weight_array = p.map(ortho_group.rvs, [1000 for _ in range(dep)])
         Weight_array = p.map(ortho_group.rvs, [mat_size for _ in range(dep)])
 
     for i in range(dep):
@@ -26,31 +28,37 @@ def NeuralNetwork(mat_size, axx, mat_var, bias_var):
     vec = np.random.randn(mat_size)
 
     for i in range(dep):
-        bias_vec = np.random.randn(mat_size) * bias_var
+        bias_vec = np.random.randn(mat_size)*bias_var
         h = Weight_array[i].dot(vec) + bias_vec
         for j in range(mat_size):
-                D[i][j,j] = 2/np.sqrt(pi)*np.exp(-h[j]**2)
-                vec[j] = erf(h[j])
+            if h[j]<0:
+                D[i][j,j] = 0
+                vec[j]=0
+            else:
+                # phi^\prime = 1 = identity - matrix - entry
+                vec[j] = h[j]
 
     Jacobi = np.identity(mat_size)
 
     for i in range(dep):
+        # J = D_1*W_1 * D_2*W_2 * ... 
         Jacobi = np.matmul(np.matmul(Jacobi, D[i]), Weight_array[i])
 
     sv = svdvals(Jacobi)
-
     print('check')
-    print('---------------------------------------')
+
+    print('---------------------------------------------------')
     print(sv)
+
     sv_no_zeros = np.delete(sv, np.where(sv < 10**(-300)))
     if sv_no_zeros.size == 0:
         axx.scatter([.5],[.5], c='#FFCC00', s=120000, label="face")
-        axx.scatter([.35, .65], [.63, .63], c='k', s=1000, label="eyes")
+        axx.scatter([.35, .65], [.63, .63], c='k', s=100, label="eyes")
 
-        X = np.linspace(.3, .7, 100)
+        X = np.linspace(.4, .6, 100)
         Y = 2* (X-.5)**2 + 0.30
 
-        axx.plot(X, Y, c='k', linewidth=8, label="smile")
+        axx.plot(X, Y, c='k', linewidth=4, label="smile")
 
         axx.set_xlim(0,1)
         axx.set_ylim(0,1)
@@ -61,7 +69,7 @@ def NeuralNetwork(mat_size, axx, mat_var, bias_var):
         axx.spines['bottom'].set_visible(False)
         axx.set_xticks([])
         axx.set_yticks([])
-        return axx
+        return
     print('Sv no zeros: ', sv_no_zeros)
     sv_min = sv_no_zeros[0]
     sv_len = np.shape(sv_no_zeros)[0]
@@ -85,7 +93,7 @@ def NeuralNetwork(mat_size, axx, mat_var, bias_var):
     for s in sv:
         if s>0:
             print('value: ', floor(log10(s)))
-            count[floor(log10(s)) + abs(btm_bnd)] += 1
+            count[floor(log10(s)) - btm_bnd] += 1
 
     #for i in range(21):
         #count[i] /= mat_size
@@ -100,25 +108,25 @@ def NeuralNetwork(mat_size, axx, mat_var, bias_var):
 
 if __name__ == '__main__':
 
-    fig, axs = plt.subplots(2,2)
+    fig, axs = plt.subplots(3,3)
+
+    fig.suptitle('On Curve', fontsize=14)
 
     fig.tight_layout(pad = 3)
 
-    data = loadtxt('erf_critical.csv', delimiter=',')
+    data = loadtxt('relu_critical.csv', delimiter=',')
 
     data_len = np.shape(data)[0]
 
     sw_sb = np.random.randint(0,data_len-1)
     NeuralNetwork(2,axs[0,0], data[sw_sb][0], data[sw_sb][1])
     NeuralNetwork(3,axs[0,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(4,axs[0,2], data[sw_sb][0], data[sw_sb][1])
     NeuralNetwork(5,axs[1,0], data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(10,axs[1,1], data[sw_sb][0], data[sw_sb][1])
-    #NeuralNetwork(20, axs[0,1], 5, 0.05)
-    #NeuralNetwork(50, axs[1,0], 5, 0.05)
-    #NeuralNetwork(100, axs[1,1], 5, 0.05)
-    #NeuralNetwork(10,axs[0,0], 1, 0.05)
-    #NeuralNetwork(20, axs[0,1], 1, 0.05)
-    #NeuralNetwork(30, axs[1,0], 1, 0.05)
-    #NeuralNetwork(50, axs[1,1], 1, 0.05)
+    NeuralNetwork(6, axs[1,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(7, axs[1,2], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(8, axs[2,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(9, axs[2,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(10, axs[2,2], data[sw_sb][0], data[sw_sb][1])
 
     plt.show()

@@ -33,12 +33,12 @@ def NeuralNetwork(mat_size, axx, mat_var, bias_var):
     sv_no_zeros = np.delete(sv, np.where(sv < 10**(-300)))
     if sv_no_zeros.size == 0:
         axx.scatter([.5],[.5], c='#FFCC00', s=120000, label="face")
-        axx.scatter([.35, .65], [.63, .63], c='k', s=1000, label="eyes")
+        axx.scatter([.35, .65], [.63, .63], c='k', s=100, label="eyes")
 
-        X = np.linspace(.3, .7, 100)
+        X = np.linspace(.4, .6, 100)
         Y = 2* (X-.5)**2 + 0.30
 
-        axx.plot(X, Y, c='k', linewidth=8, label="smile")
+        axx.plot(X, Y, c='k', linewidth=4, label="smile")
 
         axx.set_xlim(0,1)
         axx.set_ylim(0,1)
@@ -49,7 +49,7 @@ def NeuralNetwork(mat_size, axx, mat_var, bias_var):
         axx.spines['bottom'].set_visible(False)
         axx.set_xticks([])
         axx.set_yticks([])
-        return axx
+        return
     print('Sv no zeros: ', sv_no_zeros)
     sv_min = sv_no_zeros[0]
     sv_len = np.shape(sv_no_zeros)[0]
@@ -88,7 +88,9 @@ def NeuralNetwork(mat_size, axx, mat_var, bias_var):
     axx.set_title(f'Depth {dep}')
 
 if __name__ == "__main__":
-    fig, axs = plt.subplots(2,2)
+    fig, axs = plt.subplots(3,3)
+
+    fig.suptitle('On Curve', fontsize=14)
 
     fig.tight_layout(pad=3.0)
 
@@ -99,7 +101,12 @@ if __name__ == "__main__":
     sw_sb = np.random.randint(0,data_len-1)
     NeuralNetwork(2,axs[0,0], data[sw_sb][0], data[sw_sb][1])
     NeuralNetwork(3,axs[0,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(4,axs[0,2], data[sw_sb][0], data[sw_sb][1])
     NeuralNetwork(5,axs[1,0], data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(10,axs[1,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(6, axs[1,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(7, axs[1,2], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(8, axs[2,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(9, axs[2,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(10, axs[2,2], data[sw_sb][0], data[sw_sb][1])
 
     plt.show()

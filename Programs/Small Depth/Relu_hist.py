@@ -83,13 +83,15 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
 
     axx.hist(sv_hist, abs(btm_bnd - top_bnd) + 1, (btm_bnd, top_bnd), histtype = 'bar', rwidth = 0.9)
     #axx.plot([i for i in range(btm_bnd, top_bnd + 1)], count, '--')
-    axx.set_xlabel('log_10(s)')
-    axx.set_ylabel(f'$\sigma = {mat_var}$')
+    axx.set_ylabel('log_10(s)')
+    axx.set_xlabel(f'Max: {floor(log10(sv_max))}, Min: {floor(log10(sv_min))}')
     axx.set_title(f'Depth {dep}')
 
 if __name__ == '__main__':
 
-    fig, axs = plt.subplots(2,2)
+    fig, axs = plt.subplots(3,3)
+
+    fig.suptitle('On Curve', fontsize = 14)
 
     fig.tight_layout(pad = 3)
 
@@ -100,7 +102,12 @@ if __name__ == '__main__':
     sw_sb = np.random.randint(0,data_len-1)
     NeuralNetwork(1,axs[0,0], data[sw_sb][0], data[sw_sb][1])
     NeuralNetwork(2,axs[0,1], data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(3,axs[1,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(3,axs[0,2], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(4,axs[1,0], data[sw_sb][0], data[sw_sb][1])
     NeuralNetwork(5,axs[1,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(6,axs[1,2], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(7,axs[2,0], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(8,axs[2,1], data[sw_sb][0], data[sw_sb][1])
+    NeuralNetwork(9,axs[2,2], data[sw_sb][0], data[sw_sb][1])
 
     plt.show()
