@@ -8,10 +8,10 @@ import matplotlib.pyplot as plt
 
 
 
-def NeuralNetwork(dep, axx, mat_var, bias_var):
+def NeuralNetwork(dep, mat_var, bias_var):
 
     # size of matrices
-    mat_size = 200
+    mat_size = 100
 
     # multiprocessing.cpu_count() = 8
     with Pool(8) as p:
@@ -49,51 +49,22 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
             sv_list.append(floor(log10(s)))
 
     unique_sv = set(sv_list)
-    sv_len = len(unique_sv)
-    SV_Blocks = np.zeros((sv_len, 2))
-
-    i=0
-    for s in unique_sv:
-        SV_Blocks[i][0] = s
-        SV_Blocks[i][1] = sv_list.count(s)
-        i += 1
-
-    print(SV_Blocks)
-    print('---------------------')
-    mean = 0
-    for i in range(sv_len):
-        mean += SV_Blocks[i][1]
-        
-    mean = format(mean / sv_len, '.2f')
-    print('Mean size of Blocks: ', mean)
-    print('====================')
-    sv_min = int(min(SV_Blocks[:,0]))
-    sv_max = int(max(SV_Blocks[:,0]))
-    print('SV min: ', sv_min)
-    print('SV max: ', sv_max)
-
-    axx.hist(sv_list, abs(sv_max - sv_min)+1, (sv_min, sv_max), histtype = 'bar', rwidth = 0.9)
-    axx.set_xlabel('log_10(s)')
-    axx.set_ylabel(f'Mean: {mean}')
-    axx.set_title(f'Depth {dep}')
-
+    return len(unique_sv)
+    
 
 if __name__ == '__main__':
 
-    fig, axs = plt.subplots(2,2)
-
-    fig.suptitle('Occurences of singular values (floor(log10(s)))', fontsize = 14)
-
-    fig.tight_layout(pad = 3.0)
 
     data = loadtxt('hardtanh_critical.csv', delimiter=',')
 
     data_len = np.shape(data)[0]
 
     sw_sb = np.random.randint(0,data_len-1)
-    NeuralNetwork(10, axs[0,0], data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(20, axs[0,1], data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(30, axs[1,0], data[sw_sb][0], data[sw_sb][1])
-    NeuralNetwork(50, axs[1,1], data[sw_sb][0], data[sw_sb][1])
 
+    num_data = 50
+    num_blocks = [NeuralNetwork(i, data[sw_sb][0], data[sw_sb][1]) for i in range(2, num_data)]
+
+    plt.suptitle('Number of SV - Blocks', fontsize = 14)
+    plt.xlabel('Depth of Network')
+    plt.plot([i for i in range(2,num_data)], num_blocks)
     plt.show()
