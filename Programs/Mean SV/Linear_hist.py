@@ -29,7 +29,7 @@ def NeuralNetwork(dep, mat_var, bias_var):
             vec[j] = h[j]
         Jacobi = np.matmul(Jacobi, Weight_array[i])
         sv = svdvals(Jacobi)
-        sv_lst.append(floor(log10(max(sv))))
+        sv_lst.append(floor(log10(np.mean(sv))))
     
     return sv_lst
 
@@ -43,9 +43,9 @@ if __name__ == "__main__":
     sw_sb = np.random.randint(0,data_len-1)
 
     num_data = 200
-    max_sv = NeuralNetwork(num_data, data[sw_sb][0], data[sw_sb][1])
+    mean_sv = NeuralNetwork(num_data, data[sw_sb][0], data[sw_sb][1])
 
     plt.suptitle('Mean SV', fontsize = 14)
     plt.xlabel('Depth of Network')
-    plt.plot([i for i in range(1,num_data+1)], max_sv)
+    plt.plot([i for i in range(1,num_data+1)], mean_sv)
     plt.show()
