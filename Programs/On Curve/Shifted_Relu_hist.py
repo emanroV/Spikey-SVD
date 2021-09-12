@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 from multiprocessing import Pool
 
 
-def relu(x):
-    return 0 if x<0 else x
+def srelu(x):
+    return -1 if x<-1 else x
 
 def NeuralNetwork(dep, axx, mat_var, bias_var):
 
@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
     fig.tight_layout(pad = 3)
 
-    data = loadtxt('relu_critical.csv', delimiter=',')
+    data = loadtxt('srelu_critical.csv', delimiter=',')
 
     data_len = np.shape(data)[0]
 

@@ -2,6 +2,7 @@ import numpy as np
 from numpy import loadtxt
 from math import log10, floor
 from scipy.linalg import svdvals
+from tensorflow.linalg import svd
 from scipy.stats import ortho_group
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
@@ -43,7 +44,7 @@ def NeuralNetwork(dep, mat_var, bias_var):
 
         Jacobi = np.matmul(np.matmul(Jacobi, D[i]), Weight_array[i])
 
-        sv = svdvals(Jacobi)
+        sv = svd(Jacobi)[0]
         sv_lst.append(floor(log10(np.mean(sv))))
 
     return sv_lst

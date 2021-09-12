@@ -2,13 +2,14 @@ import numpy as np
 from numpy import loadtxt
 from math import log10, floor
 from scipy.linalg import svdvals
+from tensorflow.linalg import svd
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
 
 
 def NeuralNetwork(dep, axx, mat_var, bias_var):
     
-    mat_size = 100
+    mat_size = 1000
 
     Weight_array = [np.random.randn(mat_size,mat_size) for _ in range(dep)]
 
@@ -27,7 +28,7 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
             vec[j] = h[j]
         Jacobi = np.matmul(Jacobi, Weight_array[i])
 
-    sv = svdvals(Jacobi)
+    sv = svd(Jacobi)[0]
 
     print(sv)
     sv_no_zeros = np.delete(sv, np.where(sv < 10**(-300)))

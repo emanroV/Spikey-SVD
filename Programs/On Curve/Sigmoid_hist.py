@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import loadtxt
 from math import log10, floor
+from tensorflow.linalg import svd
 from scipy.linalg import svdvals
 from scipy.stats import ortho_group
 import matplotlib.pyplot as plt
@@ -16,7 +17,7 @@ def der_sig(x):
 def NeuralNetwork(dep, axx, mat_var, bias_var):
 
     # size of matrices
-    mat_size = 100
+    mat_size = 1000
 
     # multiprocessing.cpu_count() = 8
     with Pool(8) as p:
@@ -43,7 +44,7 @@ def NeuralNetwork(dep, axx, mat_var, bias_var):
         # J = D_1*W_1 * D_2*W_2 * ... 
         Jacobi = np.matmul(np.matmul(Jacobi, D[i]), Weight_array[i])
 
-    sv = svdvals(Jacobi)
+    sv = svd(Jacobi)[0]
     print('check')
 
     print('---------------------------------------------------')
